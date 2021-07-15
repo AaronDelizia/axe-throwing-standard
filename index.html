@@ -1,255 +1,619 @@
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <style>
-      .target {
-        position: absolute;
-        border-radius: 50%;
-      }
-      #one {
-        top: 0;
-        left: 0;
-      }
-      #two {
-        top: 78px;
-        left: 78px;
-      }
-      #three {
-        top: 157px;
-        left: 157px;
-      }
-      #four {
-        top: 236px;
-        left: 236Px;
-      }
-      #five {
-        top: 314px;
-        left: 314px;
-      }
-      #target {
-        position: absolute;
-        top: 314px;
-        left: 314px;
-      }
-      .currentPlayer {
-        background-color: #ff7575
-      }
-      body {
-        background-color: black;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Setup Game Modal -->
-    <div class="modal fade" id="setupGame" tabindex="-1" aria-labelledby="setupGameLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Setup</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<!--
+You can make custom borders with this tool buit I have no idea how to use it:
+https://kovart.github.io/dashed-border-generator/
+-->
+<style>
+  body {
+    background-color: black;
+  }
+  .clock {
+    font-family: 'Black Ops One', cursive;
+    text-align: center;
+    font-size: 36px;
+    color: white;
+  }
+  .menu {
+    color: white;
+    font-weight: bold;
+  }
+  .menu-item {
+    border: 1px solid white;
+    text-align: center;
+    font-size: 36px;
+  }
+  .addPlayerList {
+    border: 1px solid white;
+  }
+  .table {
+    font-size: 36px;
+  }
+  .modal {
+    font-size: 36px;
+  }
+  .modal-title {
+    font-size: 36px;
+  }
+  .btn-close {
+    background-color: white;
+  }
+  .modal-content{
+    background-color: black;
+    color: white;
+    font-weight: bold;
+  }
+  .currentPlayer {
+    background-color: #ff7575
+  }
+  .target {
+    position: absolute;
+    background-color: black;
+    border-width: 12px;
+    border-style: solid;
+    border-radius: 50%;
+    border-color: white;
+    font-family: 'Black Ops One', cursive;
+    text-align: center;
+    font-size: 36px;
+  }
+  #r1 {
+    height: 720px;
+    width: 720px;
+    top: 0;
+    left: 0;
+    color: white;
+  }
+  #r2 {
+    height: 564px;
+    width: 564px;
+    top: 78px;
+    left: 78px;
+    color: white;
+  }
+  #r3 {
+    height: 406px;
+    width: 406px;
+    top: 157px;
+    left: 157px;
+    color: white;
+  }
+  #r4 {
+    height: 248px;
+    width: 248px;
+    top: 236px;
+    left: 236px;
+    color: white;
+  }
+  #r5 {
+    height: 92px;
+    width: 92px;
+    top: 315px;
+    left: 315px;
+    color: white;
+    background-color: red;
+  }
+</style>
+</head>
+<body>
+  <!-- Reset game modal -->
+  <div class="modal" tabindex="-1" id="confirmResetGame">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Reset Game</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" id="resetGame">RESET</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add PLayers Modal -->
+  <div class="modal fade" id="addPlayers" tabindex="-1" aria-labelledby="addPlayersLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addPlayersLabel">Add Players</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <label for="addPlayerName" class="form-label">Add Player</label>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" id="addPlayerName" aria-describedby="basic-addon3">
+              <button class="btn btn-outline-light btn-lg" type="button" id="addPlayerButton">Add</button>
+            </div>
+            <hr>
           </div>
-          <div class="modal-body">
-            <div class="container">
-              <div class="row">
-                <div class="col-lg-4">
-                  <label for="numRounds" class="form-label">Number of rounds</label>
-                  <div class="input-group">
-                    <span class="input-group-btn">
-                      <button type="button" class="btn btn-danger btn-number" data-type="minus" data-field="" id="decreaseRounds">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
-                          <path d="M0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1z"/>
-                        </svg>
-                      </button>
-                    </span>
-                    <input type="text" id="numRounds" name="numRounds" class="form-control input-number" value="10" min="1" max="100">
-                    <span class="input-group-btn">
-                      <button type="button" class="btn btn-success btn-number" data-type="plus" data-field="" id="increaseRounds">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                          <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
-                        </svg>
-                      </button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-12">
-                  <label for="playerInput" class="form-label">Players</label>
-                  <div class="input-group">
-                    <input type="text" id="playerInput" name="playerInput" class="form-control">
-                    <span class="input-group-btn">
-                      <button type="button" class="btn btn-outline-dark" id="addPlayer">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                          <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
-                        </svg>
-                      </button>
-                    </span>
-                    <div class="input-group mb-1" id="playerList"></div>
-                  </div>
+          <div class="container" id="addPlayerList"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="savePlayers">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Setup Game Modal -->
+  <div class="modal fade" id="setupGame" tabindex="-1" aria-labelledby="setupGameLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="setupGameLabel">Setup</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-4">
+                <label for="numRounds" class="form-label">Number of rounds</label>
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-danger btn-number btn-lg" data-type="minus" data-field="" id="decreaseRounds">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                        <path d="M0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1z"/>
+                      </svg>
+                    </button>
+                  </span>
+                  <input type="text" id="numRounds" name="numRounds" class="form-control input-number" value="10" min="1" max="100">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-success btn-number btn-lg" data-type="plus" data-field="" id="increaseRounds">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
+                      </svg>
+                    </button>
+                  </span>
                 </div>
               </div>
             </div>
+            <hr>
+            <div class="row">
+              <div class="col-lg-4">
+                <input class="form-check-input" type="checkbox" value="" id="toggleChangeTarget">
+                <label class="form-check-label" for="toggleChangeTarget">
+                  Change Target
+                </label>
+              </div>
+              <div class="col-lg-4">
+                <input class="form-check-input changeTargetOptions" type="radio" name="changeTargetOptions" id="changeTargetRounds">
+                <label class="form-check-label" for="changeTargetRounds">
+                  After
+                </label>
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-danger btn-number btn-lg numRoundsChange" data-type="minus" data-field="" id="decreaseChangeRounds">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                        <path d="M0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1z"/>
+                      </svg>
+                    </button>
+                  </span>
+                  <input type="text" id="numRoundsChange" name="numRoundsChange" class="form-control input-number numRoundsChange" value="2" min="1" max="100">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-success btn-number btn-lg numRoundsChange" data-type="plus" data-field="" id="increaseChangeRounds">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <input class="form-check-input changeTargetOptions" type="radio" name="changeTargetOptions" id="changeTargetRandom" checked>
+                <label class="form-check-label" for="changeTargetRandom">
+                  Random
+                </label>
+              </div>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="saveGameSettings">Save changes</button>
-          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="saveGameSettings">Save changes</button>
         </div>
       </div>
     </div>
-    
-    <!-- Reset game modal -->
-    <div class="modal" tabindex="-1" id="confirmResetGame">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Reset Game</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p>Are you sure?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-danger" id="resetGame">RESET</button>
-          </div>
-        </div>
-      </div>
+  </div>
+  
+  <div class="container">
+    <div class="row"><div class="col-12 clock"></div></div>
+    <table id="scoreBoard" class="table table-bordered border-light table-dark w-100">
+      <thead id="score_h"><tr><th scope="col">Player</th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th><th scope="col">5</th><th scope="col">Total</th></tr></thead>
+      <tbody id="score_b"></tbody>
+    </table>
+    <div class="row menu">
+      <div id="menuZero" class="col-3 menu-item highlight">Zero</div>
+      <div id="menuReset" class="col-3 menu-item highlight" data-bs-toggle="modal" data-bs-target="#confirmResetGame">Reset</div>
+      <div id="menuAdd" class="col-3 menu-item highlight" data-bs-toggle="modal" data-bs-target="#addPlayers">Add Players</div>
+      <div id="menuSetup" class="col-3 menu-item highlight" data-bs-toggle="modal" data-bs-target="#setupGame">Setup</div>
     </div>
-    
-    <div class="container">
-      <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#setupGame">Setup</button>
-      <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="modal" data-bs-target="#confirmResetGame">Reset</button>
-      <button type="button" class="btn btn-lg btn-warning" onclick="hit(0)">Zero</button>
-      <table class="table table-dark">
-        <thead id="score_h"><tr><th scope="col">Player</th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th><th scope="col">5</th><th scope="col">Total</th></tr></thead>
-        <tbody id="score_b"></tbody>
-      </table>
-      <div id="target">
-        <img class=target id="one" src="assets/one-ring.png" onclick="hit(1)" onmouseover="highlight('one', true)" onmouseout="highlight('one', false)">
-        <img class=target id="two" src="assets/two-ring.png" onclick="hit(2)" onmouseover="highlight('two', true)" onmouseout="highlight('two', false)">
-        <img class=target id="three" src="assets/three-ring.png" onclick="hit(3)" onmouseover="highlight('three', true)" onmouseout="highlight('three', false)">
-        <img class=target id="four" src="assets/four-ring.png" onclick="hit(4)" onmouseover="highlight('four', true)" onmouseout="highlight('four', false)">
-        <img class=target id="five" src="assets/five-ring.png" onclick="hit(5)" onmouseover="highlight('five', true)" onmouseout="highlight('five', false)">
-      </div>
+    <div id="target">
+      <div id="r1" class="target highlight">1</div>
+      <div id="r2" class="target highlight">2</div>
+      <div id="r3" class="target highlight">3</div>
+      <div id="r4" class="target highlight">4</div>
+      <div id="r5" class="target highlight"></div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script>
-      var players = [];
-      var rounds = 5;
-      var currentPlayer = 0;
-        
-      $('#setupGame').on('show.bs.modal', function (event) {
-        $("#numRounds").val(rounds);
-      });
+  </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script>
+  var players = [];
+  var currentPlayer = 0;
+  
+  //Reset game logic
+  $("#resetGame").click(function(){
+    for(var p=0; p<players.length; p++){
+      players[p].rounds = [];
+    }
+    var currentPlayer = 0;
+    generateScoreBoard();
+    transformHome();
+    $("#confirmResetGame").modal('hide');
+  });
       
-      $("#decreaseRounds").click(function(){
-        rounds --;
-        $("#numRounds").val(rounds);
-      });
-      
-      $("#increaseRounds").click(function(){
-        rounds ++;
-        $("#numRounds").val(rounds);
-      });
-      
-      $("#saveGameSettings").click(function(){
-        rounds = $("#numRounds").val();
-        console.log("Rounds: "+rounds);
-        console.log("Players: "+players.length);
-        $("#setupGame").modal('hide');
-        generateScoreBoard();
-      });
-      
-      $("#addPlayer").click(function(){
-        var playerName = $("#playerInput").val().trim();
-        if(playerName){
-          players.push({ name: playerName, rounds: [] });
-        }
-        var playerHTML = '';
-        for(var p=0; p<players.length; p++){
-          var player = players[p];
-          playerHTML += '<span class="input-group-text">'+player.name+'</span><button type="button" class="btn btn-danger" onclick="deletePlayer('+p+')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16"><path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/></svg></button><br>';
-        }
-        $("#playerList").html(playerHTML);
-      });
-      
-      $("#resetGame").click(function(){
-        for(var p=0; p<players.length; p++){
-          players[p].rounds = [];
-        }
-        var currentPlayer = 0;
-        generateScoreBoard();
-        $("#confirmResetGame").modal('hide');
-      });
-      
-      function generateScoreBoard(){
-        $("#setupGame").modal('hide');
-        var scoreBoardHeadHTML = '<tr><th scope="col">Player</th>';
-        for(var r=0; r<rounds; r++){
-          scoreBoardHeadHTML += '<th scope="col">'+(r+1)+'</th>';
-        }
-        scoreBoardHeadHTML += '<th scope="col">Total</th></tr>';
-        $("#score_h").html(scoreBoardHeadHTML);
-        var scoreBoardBodyHTML = '';
-        for(var p=0; p<players.length; p++){
-          var player = players[p];
-          if(currentPlayer == p){
-            scoreBoardBodyHTML += '<tr class="currentPlayer"><td>'+player.name;
-          }
-          else{
-            scoreBoardBodyHTML += '<tr><td>'+player.name;
-          }
-          var total = 0;
-          for(var r=0; r<rounds; r++){
-            if(player.rounds[r] || player.rounds[r] == 0){
-              scoreBoardBodyHTML += '<td>'+player.rounds[r]+'</td>';
-              total += player.rounds[r];
-            }
-            else{
-              scoreBoardBodyHTML += '<td></td>';
-            }
-          }
-          scoreBoardBodyHTML += '<td>'+total+'</td></tr>';
-        }
-        //if(scoreBoardBodyHTML){
-          
-          $("#score_b").html(scoreBoardBodyHTML);
-        //}
+  //Add players logic
+  $('#addPlayers').on('show.bs.modal', function (event) {
+    generatePlayerEditList();
+  });
+  
+  $('#addPlayers').on('shown.bs.modal', function (event) {
+    $('#addPlayerName').focus();
+  });
+  
+  $("#addPlayerButton").click(function(){
+    addPlayer();
+  });
+  
+  $("#addPlayerName").on('keyup', function (event) {
+    if (event.key === 'Enter' || event.keyCode === 13) {
+      addPlayer();
+    }
+  });
+  
+  function addPlayer(){
+    var playerName = $("#addPlayerName").val().trim();
+    if(playerName){
+      players.push({ name: playerName, rounds: [] });
+    }
+    generatePlayerEditList();
+    $("#addPlayerName").val("");
+  }
+  
+  function deletePlayer(index){
+    players.splice(index, 1);
+    generatePlayerEditList();
+  }
+  
+  function generatePlayerEditList(){
+    var playerList = '';
+    for(var p=0; p<players.length; p++){
+      playerList += '<div class="row addPlayerList"><div class="col-10">'+players[p].name+'</div><div class="col-2"><button type="button" class="btn btn-outline-danger btn-lg" onclick="deletePlayer('+p+')">Remove</button></div></div>';
+    }
+    $("#addPlayerList").html(playerList);
+    $('#addPlayerName').focus();
+  }
+  
+  $("#savePlayers").click(function(){
+    $("#addPlayers").modal('hide');
+    generateScoreBoard();
+  });
+  
+  
+  //Game setup logic
+  var rounds = 5;
+  var changeTarget = false;
+  var changeTargetAfterRounds = 2;
+  var changeTargetRandom = false;
+  
+  $('#setupGame').on('show.bs.modal', function (event) {
+    $("#numRounds").val(rounds);
+    $("#numRoundsChange").val(changeTargetAfterRounds);
+    if(event.target.checked){
+      $(".changeTargetOptions").prop("disabled", false);
+      if($("#changeTargetRounds").is(':checked')){
+        $(".numRoundsChange").prop("disabled", false);
       }
-      
-      function deletePlayer(playerIndex){
-        players.splice(playerIndex, 1);
-        var playerHTML = '';
-        for(var p=0; p<players.length; p++){
-          var player = players[p];
-          playerHTML += '<span class="input-group-text">'+player.name+'</span><button type="button" class="btn btn-danger" onclick="deletePlayer('+p+')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16"><path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/></svg></button>';
-        }
-        $("#playerList").html(playerHTML);
+      else{
+        $(".numRoundsChange").prop("disabled", true);
       }
-      
-      function highlight(ring, highlight){
-        if(highlight){
-          document.getElementById(ring).src="assets/"+ring+"-ring-red.png";
+    }
+    else{
+      $(".changeTargetOptions").prop("disabled", true);
+      $(".numRoundsChange").prop("disabled", true);
+    }
+  });
+  
+  $("#decreaseRounds").click(function(){
+    rounds --;
+    $("#numRounds").val(rounds);
+  });
+  
+  $("#increaseRounds").click(function(){
+    rounds ++;
+    $("#numRounds").val(rounds);
+  });
+  
+  $("#decreaseChangeRounds").click(function(){
+    changeTargetAfterRounds --;
+    $("#numRoundsChange").val(changeTargetAfterRounds);
+  });
+  
+  $("#increaseChangeRounds").click(function(){
+    changeTargetAfterRounds ++;
+    $("#numRoundsChange").val(changeTargetAfterRounds);
+  });
+  
+  $("#toggleChangeTarget").click(function(event){
+    if(event.target.checked){
+      $(".changeTargetOptions").prop("disabled", false);
+      if($("#changeTargetRounds").is(':checked')){
+        $(".numRoundsChange").prop("disabled", false);
+      }
+      else{
+        $(".numRoundsChange").prop("disabled", true);
+      }
+    }
+    else{
+      $(".changeTargetOptions").prop("disabled", true);
+      $(".numRoundsChange").prop("disabled", true);
+    }
+  });
+  
+  $(".changeTargetOptions").click(function(){
+    if($("#changeTargetRounds").is(':checked')){
+      $(".numRoundsChange").prop("disabled", false);
+    }
+    else{
+      $(".numRoundsChange").prop("disabled", true);
+    }
+  });
+  
+  $("#saveGameSettings").click(function(){
+    console.log("####"+$("#toggleChangeTarget").is(':checked'));
+    console.log("####"+$("#changeTargetRounds").is(':checked'));
+    console.log("####"+$("#numRoundsChange").val());
+    if($("#toggleChangeTarget").is(':checked')){
+      changeTarget = true;
+      if(!$("#changeTargetRounds").is(':checked')){
+        changeTargetRandom = true;
+      }
+      else{
+        changeTargetRandom = false;
+        changeTargetAfterRounds = $("#numRoundsChange").val();
+      }
+    }
+    else{
+      changeTarget = false;
+    }
+    $("#setupGame").modal('hide');
+    generateScoreBoard();
+  });
+  
+  function generateScoreBoard(){
+    $("#setupGame").modal('hide');
+    var scoreBoardHeadHTML = '<tr><th scope="col">Player</th>';
+    for(var r=0; r<rounds; r++){
+      scoreBoardHeadHTML += '<th scope="col">'+(r+1)+'</th>';
+    }
+    scoreBoardHeadHTML += '<th scope="col">Total</th></tr>';
+    $("#score_h").html(scoreBoardHeadHTML);
+    var scoreBoardBodyHTML = '';
+    for(var p=0; p<players.length; p++){
+      var player = players[p];
+      if(currentPlayer == p){
+        scoreBoardBodyHTML += '<tr class="table-light"><td>'+player.name;
+      }
+      else{
+        scoreBoardBodyHTML += '<tr onclick="selectPlayer('+p+')"><td>'+player.name;
+      }
+      var total = 0;
+      for(var r=0; r<rounds; r++){
+        if(player.rounds[r] || player.rounds[r] == 0){
+          scoreBoardBodyHTML += '<td>'+player.rounds[r]+'</td>';
+          total += player.rounds[r];
         }
         else{
-          document.getElementById(ring).src="assets/"+ring+"-ring.png";
+          scoreBoardBodyHTML += '<td></td>';
         }
       }
+      scoreBoardBodyHTML += '<td>'+total+'</td></tr>';
+    }
+    $("#score_b").html(scoreBoardBodyHTML);
+  }
+  
+  //Game logic
+  $(".target").click(function(event){
+    console.log("changeTarget :"+changeTarget);
+    console.log("changeTargetRandom :"+changeTargetRandom);
+    console.log("changeTargetAfterRounds :"+changeTargetAfterRounds);
+    var ring = parseInt(event.target.id[1]);
+    players[currentPlayer].rounds.push(ring);
+    if(players[currentPlayer].rounds.length == rounds && currentPlayer < (players.length-1)){
+      currentPlayer ++;
+      transformHome();
+    }
+    else{
+      if(changeTarget){
+        if(changeTargetRandom){
+          var coinFlip = Math.floor(Math.random() * 2);
+          if(coinFlip == 0){
+            pickTransformation();
+          }
+        }
+        else if(players[currentPlayer].rounds.length % changeTargetAfterRounds == 0){
+          pickTransformation();
+        }
+      }
+    }
+    generateScoreBoard();
+  });
+  
+  function selectPlayer(player){
+    console.log(player);
+    currentPlayer = player;
+    generateScoreBoard();
+  }
+  
+  function startTime() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    m = checkTime(m);
+    $(".clock").html(h + ":" + m);
+    setTimeout(startTime, 1000);
+  }
+  
+  function checkTime(i) {
+    if (i < 10) {i = "0" + i};
+    return i;
+  }
+
+  function pickTransformation(){
+    var pickedTransformation = Math.floor(Math.random() * 3);
+    if(pickedTransformation == 0){
+      transformLeft();
+    }
+    else if(pickedTransformation == 1){
+      transformRight();
+    }
+    else{
+      transformDown();
+    }
+  }
+
+  function transformLeft(){
+    transformHome();
+    var outerLeft = parseInt($("#r1").css("left"));
+    var shift = 25 * scaleMultiply;
+    $("#r2").css("left", (outerLeft+shift)+"px");
+    $("#r3").css("left", (parseInt($("#r2").css("left"))+shift)+"px");
+    $("#r4").css("left", (parseInt($("#r3").css("left"))+shift)+"px");
+    $("#r5").css("left", (parseInt($("#r4").css("left"))+shift)+"px");
+  }
+  
+  function transformRight(){
+    transformHome();
+    var outerLeft = parseInt($("#r1").css("left"));
+    var shift = 130 * scaleMultiply;
+    $("#r2").css("left", (outerLeft+shift)+"px");
+    $("#r3").css("left", (parseInt($("#r2").css("left"))+shift)+"px");
+    $("#r4").css("left", (parseInt($("#r3").css("left"))+shift)+"px");
+    $("#r5").css("left", (parseInt($("#r4").css("left"))+shift)+"px");
+  }
+  
+  function transformDown(){
+    transformHome();
+    var outerLeft = parseInt($("#r1").css("top"));
+    var shift = 130 * scaleMultiply;
+    $("#r2").css("top", (outerLeft+shift)+"px");
+    $("#r3").css("top", (parseInt($("#r2").css("top"))+shift)+"px");
+    $("#r4").css("top", (parseInt($("#r3").css("top"))+shift)+"px");
+    $("#r5").css("top", (parseInt($("#r4").css("top"))+shift)+"px");
+  }
+  
+  function transformHome(){
+    $("#r1").css("top", "0px");
+    $("#r1").css("left", "0px");
+    $("#r1").css("height", "720px");
+    $("#r1").css("width", "720px");
+    $("#r2").css("top", "78px");
+    $("#r2").css("left", "78px");
+    $("#r2").css("height", "564px");
+    $("#r2").css("width", "564px");
+    $("#r3").css("top", "157px");
+    $("#r3").css("left", "157px");
+    $("#r3").css("height", "406px");
+    $("#r3").css("width", "406px");
+    $("#r4").css("top", "236px");
+    $("#r4").css("left", "236px");
+    $("#r4").css("height", "248px");
+    $("#r4").css("width", "248px");
+    $("#r5").css("top", "315px");
+    $("#r5").css("left", "315px");
+    $("#r5").css("height", "92px");
+    $("#r5").css("width", "92px");
+    $(".target").css("border-width", "12px");
+    $(".target").css("font-size", "36px");
+    scale();
+    shift();
+  }
+  
+  $(".highlight").mouseover(function(event){
+    $("#"+event.target.id).css("background", "#00ffff");
+    $("#"+event.target.id).css("color", "#ffff00");
+  });
+  
+  $(".highlight").mouseout(function(event){
+    if(event.target.id != "r5"){
+      $("#"+event.target.id).css("background", "black");
+    }
+    else{
+      $("#"+event.target.id).css("background", "red");
+    }
+    $("#"+event.target.id).css("color", "white");
+  });
+  
+  //Edit these variables to move and size the target
+  var topShift = 300;
+  var leftShift = 100;
+  var scaleMultiply = 1;
+  
+  function shift(){
+    for(var x=1; x<=5; x++){
+      var defaultTop = parseInt($("#r"+x).css("top"));
+      var newTop = defaultTop+topShift;
+      $("#r"+x).css("top", newTop+"px");
       
-      function hit(ring){
-        players[currentPlayer].rounds.push(ring);
-        if(currentPlayer < (players.length-1)){
-          currentPlayer ++;
-        }
-        else{
-          currentPlayer = 0;
-        }
-        generateScoreBoard();
+      var defaultLeft = parseInt($("#r"+x).css("left"));
+      var newleft = defaultLeft+leftShift;
+      $("#r"+x).css("left", newleft+"px");
+    }
+  }
+  
+  function scale(){
+    var allOffsets = [];
+    for(var x=1; x<=5; x++){
+      var defaultHeight = parseInt($("#r"+x).css("height"));
+      var newHeight = defaultHeight*scaleMultiply;
+      $("#r"+x).css("height", newHeight+"px");
+      
+      var defaultWidth = parseInt($("#r"+x).css("width"));
+      var newWidth = defaultWidth*scaleMultiply;
+      $("#r"+x).css("width", newWidth+"px");
+      
+      if(x != 1){
+        var gap = parseInt($("#r"+x).css("top")) - parseInt($("#r"+(x - 1)).css("top"));
+        var shiftOffset = gap * scaleMultiply * (x - 1);
+        allOffsets.push(shiftOffset);
       }
-    </script>
-  </body>
+    }
+    for(var x=0; x<allOffsets.length; x++){
+      $("#r"+(x + 2)).css("top", allOffsets[x]+"px");
+      $("#r"+(x + 2)).css("left", allOffsets[x]+"px");
+    }
+    var defaultFontSize = parseInt($(".target").css("font-size"));
+    var defaultBorderWidth = parseInt($(".target").css("border-width"));
+    $(".target").css("font-size", (defaultFontSize * scaleMultiply)+"px");
+    $(".target").css("border-width", (defaultBorderWidth * scaleMultiply)+"px");
+  }
+  
+  $(document).ready(function() {
+    scale();
+    shift();
+    startTime();
+  });
+</script>
 </html>
