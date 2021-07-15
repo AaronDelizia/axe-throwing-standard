@@ -257,8 +257,9 @@ https://kovart.github.io/dashed-border-generator/
       <tbody id="score_b"></tbody>
     </table>
     <div class="row menu">
-      <div id="r0" class="col-3 menu-item targetZero highlight">Zero</div>
-      <div id="menuReset" class="col-3 menu-item highlight" data-bs-toggle="modal" data-bs-target="#confirmResetGame">Reset</div>
+      <div id="r0" class="col-2 menu-item targetZero highlight">Zero</div>
+      <div id="undo" class="col-2 menu-item highlight">Undo</div>
+      <div id="menuReset" class="col-2 menu-item highlight" data-bs-toggle="modal" data-bs-target="#confirmResetGame">Reset</div>
       <div id="menuAdd" class="col-3 menu-item highlight" data-bs-toggle="modal" data-bs-target="#addPlayers">Add Players</div>
       <div id="menuSetup" class="col-3 menu-item highlight" data-bs-toggle="modal" data-bs-target="#setupGame">Setup</div>
       <!-- Comment out the above line and uncomment the below line to disable the Setup button
@@ -684,6 +685,7 @@ https://kovart.github.io/dashed-border-generator/
   /////////////
   var players = [];
   var currentPlayer = 0;
+  var undoPlayer = false;
   
   //$(".target").click(function(event){
   //  var ring = parseInt(event.target.id[1]);
@@ -709,13 +711,37 @@ https://kovart.github.io/dashed-border-generator/
   //  generateScoreBoard();
   //});
   $(".target").click(function(event){
+    advanceGame();
+  });
+  
+  $(".targetZero").click(function(event){
+    advanceGame();
+  });
+  
+  $("#undo").click(function(){
+    if(undoPlayer){
+      if(currentPlayer > 0){
+        currentPlayer --;
+      }
+      else{
+        currentPlayer = players.length-1;
+      }
+    }
+    players[currentPlayer].rounds.pop();
+    generateScoreBoard();
+  });
+  
+  function advanceGame(){
     var ring = parseInt(event.target.id[1]);
     players[currentPlayer].rounds.push(ring);
+    undoPlayer = false;
     if(players[currentPlayer].rounds.length % 2 == 0 && currentPlayer < (players.length-1)){
       currentPlayer ++;
+      undoPlayer = true;
     }
     else if(players[currentPlayer].rounds.length % 2 == 0 && currentPlayer == players.length-1){
       currentPlayer = 0;
+      undoPlayer = true;
     }
     if(changeTarget){
       if(changeTargetRandom){
@@ -729,31 +755,7 @@ https://kovart.github.io/dashed-border-generator/
       }
     }
     generateScoreBoard();
-  });
-  
-  $(".targetZero").click(function(event){
-    var ring = parseInt(event.target.id[1]);
-    players[currentPlayer].rounds.push(ring);
-    if(players[currentPlayer].rounds.length == rounds && currentPlayer < (players.length-1)){
-      currentPlayer ++;
-      transformHome();
-      targetOrientation = -1;
-    }
-    else{
-      if(changeTarget){
-        if(changeTargetRandom){
-          var coinFlip = Math.floor(Math.random() * 2);
-          if(coinFlip == 0){
-            pickTransformation();
-          }
-        }
-        else if(players[currentPlayer].rounds.length % changeTargetAfterRounds == 0){
-          pickTransformation();
-        }
-      }
-    }
-    generateScoreBoard();
-  });
+  }
   
   function selectPlayer(player){
     currentPlayer = player;
