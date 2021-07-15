@@ -5,7 +5,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <!--
-You can make custom borders with this tool buit I have no idea how to use it:
+You can make custom borders with this tool but I have no idea how to use it:
 https://kovart.github.io/dashed-border-generator/
 -->
 <style>
@@ -183,7 +183,7 @@ https://kovart.github.io/dashed-border-generator/
               <div class="col-lg-4">
                 <input class="form-check-input" type="checkbox" value="" id="toggleChangeTarget">
                 <label class="form-check-label" for="toggleChangeTarget">
-                  Change Target
+                  Transform Target
                 </label>
               </div>
               <div class="col-lg-4">
@@ -214,6 +214,30 @@ https://kovart.github.io/dashed-border-generator/
                 <label class="form-check-label" for="changeTargetRandom">
                   Random
                 </label>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text" id="xShiftLabel">Target shift X:</span>
+                  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="xShiftLabel" id="xShiftTarget">
+                  <span class="input-group-text">px</span>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text" id="yShiftLabel">Target shift Y:</span>
+                  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="yShiftLabel" id="yShiftTarget">
+                  <span class="input-group-text">px</span>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text" id="scaleLabel">Target scale up/down:</span>
+                  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="scaleLabel" id="scaleTarget">
+                  <span class="input-group-text">px</span>
+                </div>
               </div>
             </div>
           </div>
@@ -250,10 +274,9 @@ https://kovart.github.io/dashed-border-generator/
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script>
-  var players = [];
-  var currentPlayer = 0;
-  
-  //Reset game logic
+  ///////////////////
+  // Reset game logic
+  ///////////////////
   $("#resetGame").click(function(){
     for(var p=0; p<players.length; p++){
       players[p].rounds = [];
@@ -263,8 +286,11 @@ https://kovart.github.io/dashed-border-generator/
     transformHome();
     $("#confirmResetGame").modal('hide');
   });
-      
-  //Add players logic
+  
+  
+  ////////////////////
+  // Add players logic
+  ////////////////////
   $('#addPlayers').on('show.bs.modal', function (event) {
     generatePlayerEditList();
   });
@@ -312,7 +338,9 @@ https://kovart.github.io/dashed-border-generator/
   });
   
   
-  //Game setup logic
+  ///////////////////
+  // Game setup logic
+  ///////////////////
   var rounds = 5;
   var changeTarget = false;
   var changeTargetAfterRounds = 2;
@@ -320,8 +348,11 @@ https://kovart.github.io/dashed-border-generator/
   
   $('#setupGame').on('show.bs.modal', function (event) {
     $("#numRounds").val(rounds);
+    $("#yShiftTarget").val(topShift);
+    $("#xShiftTarget").val(leftShift);
+    $("#scaleTarget").val(scaleMultiply);
     $("#numRoundsChange").val(changeTargetAfterRounds);
-    if(event.target.checked){
+    if($("#toggleChangeTarget").is(':checked')){
       $(".changeTargetOptions").prop("disabled", false);
       if($("#changeTargetRounds").is(':checked')){
         $(".numRoundsChange").prop("disabled", false);
@@ -382,9 +413,6 @@ https://kovart.github.io/dashed-border-generator/
   });
   
   $("#saveGameSettings").click(function(){
-    console.log("####"+$("#toggleChangeTarget").is(':checked'));
-    console.log("####"+$("#changeTargetRounds").is(':checked'));
-    console.log("####"+$("#numRoundsChange").val());
     if($("#toggleChangeTarget").is(':checked')){
       changeTarget = true;
       if(!$("#changeTargetRounds").is(':checked')){
@@ -400,6 +428,43 @@ https://kovart.github.io/dashed-border-generator/
     }
     $("#setupGame").modal('hide');
     generateScoreBoard();
+    var yShiftTarget = $("#yShiftTarget").val().trim();
+    var xShiftTarget = $("#xShiftTarget").val().trim();
+    var scaleTarget = $("#scaleTarget").val().trim();
+    if(!isNaN(yShiftTarget)){
+      if(yShiftTarget >= 0){
+        topShift = parseInt(yShiftTarget);
+      }
+      else{
+        topShift = 0;
+      }
+    }
+    if(!isNaN(xShiftTarget)){
+      if(xShiftTarget >= 0){
+        leftShift = parseInt(xShiftTarget);
+      }
+      else{
+        leftShift = 0;
+      }
+    }
+    if(!isNaN(scaleTarget)){
+      if(scaleTarget > 0){
+        scaleMultiply = scaleTarget;
+      }
+      else{
+        scaleMultiply = 0.1;
+      }
+    }
+    transformHome();
+    console.log("topShift: "+topShift);
+    console.log("leftShift: "+leftShift);
+    console.log("scaleMultiply: "+scaleMultiply);
+    for(var x=1; x<=5; x++){
+      console.log("r"+x+" top: "+$("#r"+x).css("top"));
+      console.log("r"+x+" left: "+$("#r"+x).css("left"));
+      console.log("r"+x+" height: "+$("#r"+x).css("height"));
+      console.log("r"+x+" width: "+$("#r"+x).css("width"));
+    }
   });
   
   function generateScoreBoard(){
@@ -434,67 +499,34 @@ https://kovart.github.io/dashed-border-generator/
     $("#score_b").html(scoreBoardBodyHTML);
   }
   
-  //Game logic
-  $(".target").click(function(event){
-    console.log("changeTarget :"+changeTarget);
-    console.log("changeTargetRandom :"+changeTargetRandom);
-    console.log("changeTargetAfterRounds :"+changeTargetAfterRounds);
-    var ring = parseInt(event.target.id[1]);
-    players[currentPlayer].rounds.push(ring);
-    if(players[currentPlayer].rounds.length == rounds && currentPlayer < (players.length-1)){
-      currentPlayer ++;
-      transformHome();
-    }
-    else{
-      if(changeTarget){
-        if(changeTargetRandom){
-          var coinFlip = Math.floor(Math.random() * 2);
-          if(coinFlip == 0){
-            pickTransformation();
-          }
-        }
-        else if(players[currentPlayer].rounds.length % changeTargetAfterRounds == 0){
-          pickTransformation();
-        }
-      }
-    }
-    generateScoreBoard();
-  });
   
-  function selectPlayer(player){
-    console.log(player);
-    currentPlayer = player;
-    generateScoreBoard();
-  }
+  //////////////////////////////
+  // Target transformation logic
+  //////////////////////////////
+  var targetOrientation = -1;
   
-  function startTime() {
-    var today = new Date();
-    var h = today.getHours();
-    var m = today.getMinutes();
-    m = checkTime(m);
-    $(".clock").html(h + ":" + m);
-    setTimeout(startTime, 1000);
-  }
-  
-  function checkTime(i) {
-    if (i < 10) {i = "0" + i};
-    return i;
-  }
-
   function pickTransformation(){
     var pickedTransformation = Math.floor(Math.random() * 3);
-    if(pickedTransformation == 0){
+    if(pickedTransformation == 0 && pickedTransformation != targetOrientation){
       transformLeft();
+      targetOrientation = 0;
     }
-    else if(pickedTransformation == 1){
+    else if(pickedTransformation == 1 && pickedTransformation != targetOrientation){
       transformRight();
+      targetOrientation = 1;
     }
-    else{
+    else if(pickedTransformation == 2 && pickedTransformation != targetOrientation){
       transformDown();
+      targetOrientation = 2;
+    }
+    else if(pickedTransformation == targetOrientation){
+      transformHome();
+      targetOrientation = -1;
     }
   }
 
   function transformLeft(){
+    console.log("Transforming left...");
     transformHome();
     var outerLeft = parseInt($("#r1").css("left"));
     var shift = 25 * scaleMultiply;
@@ -502,9 +534,11 @@ https://kovart.github.io/dashed-border-generator/
     $("#r3").css("left", (parseInt($("#r2").css("left"))+shift)+"px");
     $("#r4").css("left", (parseInt($("#r3").css("left"))+shift)+"px");
     $("#r5").css("left", (parseInt($("#r4").css("left"))+shift)+"px");
+    console.log("Transformation left complete!");
   }
   
   function transformRight(){
+    console.log("Transforming right...");
     transformHome();
     var outerLeft = parseInt($("#r1").css("left"));
     var shift = 130 * scaleMultiply;
@@ -512,9 +546,11 @@ https://kovart.github.io/dashed-border-generator/
     $("#r3").css("left", (parseInt($("#r2").css("left"))+shift)+"px");
     $("#r4").css("left", (parseInt($("#r3").css("left"))+shift)+"px");
     $("#r5").css("left", (parseInt($("#r4").css("left"))+shift)+"px");
+    console.log("Transformation right complete!");
   }
   
   function transformDown(){
+    console.log("Transforming down...");
     transformHome();
     var outerLeft = parseInt($("#r1").css("top"));
     var shift = 130 * scaleMultiply;
@@ -522,6 +558,7 @@ https://kovart.github.io/dashed-border-generator/
     $("#r3").css("top", (parseInt($("#r2").css("top"))+shift)+"px");
     $("#r4").css("top", (parseInt($("#r3").css("top"))+shift)+"px");
     $("#r5").css("top", (parseInt($("#r4").css("top"))+shift)+"px");
+    console.log("Transformation down complete!");
   }
   
   function transformHome(){
@@ -547,8 +584,105 @@ https://kovart.github.io/dashed-border-generator/
     $("#r5").css("width", "92px");
     $(".target").css("border-width", "12px");
     $(".target").css("font-size", "36px");
+    console.log("# Restored target back to default settings:");
+    for(var x=1; x<=5; x++){
+      console.log("## r"+x+" top: "+$("#r"+x).css("top"));
+      console.log("## r"+x+" left: "+$("#r"+x).css("left"));
+      console.log("## r"+x+" height: "+$("#r"+x).css("height"));
+      console.log("## r"+x+" width: "+$("#r"+x).css("width"));
+    }
     scale();
     shift();
+  }
+  
+  
+  //////////////////////////////////
+  // Target sizing/positioning logic
+  //////////////////////////////////
+  var topShift = 300;
+  var leftShift = 100;
+  var scaleMultiply = 1;
+  
+  function shift(){
+    console.log("# Setting target position:");
+    for(var x=1; x<=5; x++){
+      var defaultTop = parseInt($("#r"+x).css("top"));
+      var newTop = defaultTop+topShift;
+      $("#r"+x).css("top", newTop+"px");
+      console.log("## r"+x+" top: "+defaultTop+" -> "+newTop);
+      var defaultLeft = parseInt($("#r"+x).css("left"));
+      var newleft = defaultLeft+leftShift;
+      $("#r"+x).css("left", newleft+"px");
+      console.log("## r"+x+" left: "+defaultLeft+" -> "+newleft);
+    }
+    console.log("Positioning complete!");
+  }
+  
+  function scale(){
+    console.log("# Scaling target to size:");
+    var allOffsets = [];
+    for(var x=1; x<=5; x++){
+      var defaultHeight = parseInt($("#r"+x).css("height"));
+      var newHeight = defaultHeight*scaleMultiply;
+      $("#r"+x).css("height", newHeight+"px");
+      console.log("## r"+x+" height: "+defaultHeight+" -> "+newHeight);
+      var defaultWidth = parseInt($("#r"+x).css("width"));
+      var newWidth = defaultWidth*scaleMultiply;
+      $("#r"+x).css("width", newWidth+"px");
+      console.log("## r"+x+" width: "+defaultWidth+" -> "+newWidth);
+      if(x != 1){
+        var gap = parseInt($("#r"+x).css("top")) - parseInt($("#r"+(x - 1)).css("top"));
+        var shiftOffset = gap * scaleMultiply * (x - 1);
+        allOffsets.push(shiftOffset);
+      }
+    }
+    console.log("# Adjusting ring position offset:");
+    for(var x=0; x<allOffsets.length; x++){
+      console.log("## r"+(x + 2)+" top: "+parseInt($("#r"+(x + 2)).css("top"))+" -> "+allOffsets[x]);
+      $("#r"+(x + 2)).css("top", allOffsets[x]+"px");
+      console.log("## r"+(x + 2)+" left: "+parseInt($("#r"+(x + 2)).css("left"))+" -> "+allOffsets[x]);
+      $("#r"+(x + 2)).css("left", allOffsets[x]+"px");
+    }
+    var defaultFontSize = parseInt($(".target").css("font-size"));
+    var defaultBorderWidth = parseInt($(".target").css("border-width"));
+    $(".target").css("font-size", (defaultFontSize * scaleMultiply)+"px");
+    $(".target").css("border-width", (defaultBorderWidth * scaleMultiply)+"px");
+    console.log("Scaling complete!");
+  }
+  
+  
+  /////////////
+  // Game logic
+  /////////////
+  var players = [];
+  var currentPlayer = 0;
+  
+  $(".target").click(function(event){
+    var ring = parseInt(event.target.id[1]);
+    players[currentPlayer].rounds.push(ring);
+    if(players[currentPlayer].rounds.length == rounds && currentPlayer < (players.length-1)){
+      currentPlayer ++;
+      transformHome();
+    }
+    else{
+      if(changeTarget){
+        if(changeTargetRandom){
+          var coinFlip = Math.floor(Math.random() * 2);
+          if(coinFlip == 0){
+            pickTransformation();
+          }
+        }
+        else if(players[currentPlayer].rounds.length % changeTargetAfterRounds == 0){
+          pickTransformation();
+        }
+      }
+    }
+    generateScoreBoard();
+  });
+  
+  function selectPlayer(player){
+    currentPlayer = player;
+    generateScoreBoard();
   }
   
   $(".highlight").mouseover(function(event){
@@ -566,50 +700,26 @@ https://kovart.github.io/dashed-border-generator/
     $("#"+event.target.id).css("color", "white");
   });
   
-  //Edit these variables to move and size the target
-  var topShift = 300;
-  var leftShift = 100;
-  var scaleMultiply = 1;
   
-  function shift(){
-    for(var x=1; x<=5; x++){
-      var defaultTop = parseInt($("#r"+x).css("top"));
-      var newTop = defaultTop+topShift;
-      $("#r"+x).css("top", newTop+"px");
-      
-      var defaultLeft = parseInt($("#r"+x).css("left"));
-      var newleft = defaultLeft+leftShift;
-      $("#r"+x).css("left", newleft+"px");
-    }
+  //////////////
+  // Clock logic
+  //////////////
+  function startTime() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    m = checkTime(m);
+    $(".clock").html(h + ":" + m);
+    setTimeout(startTime, 1000);
   }
   
-  function scale(){
-    var allOffsets = [];
-    for(var x=1; x<=5; x++){
-      var defaultHeight = parseInt($("#r"+x).css("height"));
-      var newHeight = defaultHeight*scaleMultiply;
-      $("#r"+x).css("height", newHeight+"px");
-      
-      var defaultWidth = parseInt($("#r"+x).css("width"));
-      var newWidth = defaultWidth*scaleMultiply;
-      $("#r"+x).css("width", newWidth+"px");
-      
-      if(x != 1){
-        var gap = parseInt($("#r"+x).css("top")) - parseInt($("#r"+(x - 1)).css("top"));
-        var shiftOffset = gap * scaleMultiply * (x - 1);
-        allOffsets.push(shiftOffset);
-      }
-    }
-    for(var x=0; x<allOffsets.length; x++){
-      $("#r"+(x + 2)).css("top", allOffsets[x]+"px");
-      $("#r"+(x + 2)).css("left", allOffsets[x]+"px");
-    }
-    var defaultFontSize = parseInt($(".target").css("font-size"));
-    var defaultBorderWidth = parseInt($(".target").css("border-width"));
-    $(".target").css("font-size", (defaultFontSize * scaleMultiply)+"px");
-    $(".target").css("border-width", (defaultBorderWidth * scaleMultiply)+"px");
+  function checkTime(i) {
+    if (i < 10) {i = "0" + i};
+    return i;
   }
   
+  
+  // Load with default settings
   $(document).ready(function() {
     scale();
     shift();
