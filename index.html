@@ -686,6 +686,7 @@ https://kovart.github.io/dashed-border-generator/
   var players = [];
   var currentPlayer = 0;
   var undoPlayer = false;
+  var enableUndo = false;
   
   //$(".target").click(function(event){
   //  var ring = parseInt(event.target.id[1]);
@@ -719,16 +720,19 @@ https://kovart.github.io/dashed-border-generator/
   });
   
   $("#undo").click(function(){
-    if(undoPlayer){
-      if(currentPlayer > 0){
-        currentPlayer --;
+    if(enableUndo){
+      if(undoPlayer){
+        if(currentPlayer > 0){
+          currentPlayer --;
+        }
+        else{
+          currentPlayer = players.length-1;
+        }
       }
-      else{
-        currentPlayer = players.length-1;
-      }
+      players[currentPlayer].rounds.pop();
+      generateScoreBoard();
+      enableUndo = false;
     }
-    players[currentPlayer].rounds.pop();
-    generateScoreBoard();
   });
   
   function advanceGame(){
@@ -755,6 +759,7 @@ https://kovart.github.io/dashed-border-generator/
       }
     }
     generateScoreBoard();
+    enableUndo = true;
   }
   
   function selectPlayer(player){
