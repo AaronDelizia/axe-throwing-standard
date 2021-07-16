@@ -460,15 +460,6 @@ https://kovart.github.io/dashed-border-generator/
       }
     }
     transformHome();
-    console.log("topShift: "+topShift);
-    console.log("leftShift: "+leftShift);
-    console.log("scaleMultiply: "+scaleMultiply);
-    for(var x=1; x<=5; x++){
-      console.log("r"+x+" top: "+$("#r"+x).css("top"));
-      console.log("r"+x+" left: "+$("#r"+x).css("left"));
-      console.log("r"+x+" height: "+$("#r"+x).css("height"));
-      console.log("r"+x+" width: "+$("#r"+x).css("width"));
-    }
   });
   
   function generateScoreBoard(){
@@ -540,7 +531,6 @@ https://kovart.github.io/dashed-border-generator/
   }
 
   function transformLeft(){
-    console.log("Transforming left...");
     transformHome();
     var outerLeft = parseInt($("#r1").css("left"));
     var shift = 25 * scaleMultiply;
@@ -548,11 +538,9 @@ https://kovart.github.io/dashed-border-generator/
     $("#r3").css("left", (parseInt($("#r2").css("left"))+shift)+"px");
     $("#r4").css("left", (parseInt($("#r3").css("left"))+shift)+"px");
     $("#r5").css("left", (parseInt($("#r4").css("left"))+shift)+"px");
-    console.log("Transformation left complete!");
   }
   
   function transformRight(){
-    console.log("Transforming right...");
     transformHome();
     var outerLeft = parseInt($("#r1").css("left"));
     var shift = 130 * scaleMultiply;
@@ -560,11 +548,9 @@ https://kovart.github.io/dashed-border-generator/
     $("#r3").css("left", (parseInt($("#r2").css("left"))+shift)+"px");
     $("#r4").css("left", (parseInt($("#r3").css("left"))+shift)+"px");
     $("#r5").css("left", (parseInt($("#r4").css("left"))+shift)+"px");
-    console.log("Transformation right complete!");
   }
   
   function transformDown(){
-    console.log("Transforming down...");
     transformHome();
     var outerLeft = parseInt($("#r1").css("top"));
     var shift = 130 * scaleMultiply;
@@ -572,7 +558,6 @@ https://kovart.github.io/dashed-border-generator/
     $("#r3").css("top", (parseInt($("#r2").css("top"))+shift)+"px");
     $("#r4").css("top", (parseInt($("#r3").css("top"))+shift)+"px");
     $("#r5").css("top", (parseInt($("#r4").css("top"))+shift)+"px");
-    console.log("Transformation down complete!");
   }
   
   function transformHome(){
@@ -598,13 +583,6 @@ https://kovart.github.io/dashed-border-generator/
     $("#r5").css("width", "92px");
     $(".target").css("border-width", "12px");
     $(".target").css("font-size", "36px");
-    console.log("# Restored target back to default settings:");
-    for(var x=1; x<=5; x++){
-      console.log("## r"+x+" top: "+$("#r"+x).css("top"));
-      console.log("## r"+x+" left: "+$("#r"+x).css("left"));
-      console.log("## r"+x+" height: "+$("#r"+x).css("height"));
-      console.log("## r"+x+" width: "+$("#r"+x).css("width"));
-    }
     scale();
     shift();
   }
@@ -618,50 +596,39 @@ https://kovart.github.io/dashed-border-generator/
   var scaleMultiply = 1;
   
   function shift(){
-    console.log("# Setting target position:");
     for(var x=1; x<=5; x++){
       var defaultTop = parseInt($("#r"+x).css("top"));
       var newTop = defaultTop+topShift;
       $("#r"+x).css("top", newTop+"px");
-      console.log("## r"+x+" top: "+defaultTop+" -> "+newTop);
       var defaultLeft = parseInt($("#r"+x).css("left"));
       var newleft = defaultLeft+leftShift;
       $("#r"+x).css("left", newleft+"px");
-      console.log("## r"+x+" left: "+defaultLeft+" -> "+newleft);
     }
-    console.log("Positioning complete!");
   }
   
   function scale(){
-    console.log("# Scaling target to size:");
     var allOffsets = [];
     for(var x=1; x<=5; x++){
       var defaultHeight = parseInt($("#r"+x).css("height"));
       var newHeight = defaultHeight*scaleMultiply;
       $("#r"+x).css("height", newHeight+"px");
-      console.log("## r"+x+" height: "+defaultHeight+" -> "+newHeight);
       var defaultWidth = parseInt($("#r"+x).css("width"));
       var newWidth = defaultWidth*scaleMultiply;
       $("#r"+x).css("width", newWidth+"px");
-      console.log("## r"+x+" width: "+defaultWidth+" -> "+newWidth);
       if(x != 1){
         var gap = parseInt($("#r"+x).css("top")) - parseInt($("#r"+(x - 1)).css("top"));
         var shiftOffset = gap * scaleMultiply * (x - 1);
         allOffsets.push(shiftOffset);
       }
     }
-    console.log("# Adjusting ring position offset:");
     for(var x=0; x<allOffsets.length; x++){
-      console.log("## r"+(x + 2)+" top: "+parseInt($("#r"+(x + 2)).css("top"))+" -> "+allOffsets[x]);
       $("#r"+(x + 2)).css("top", allOffsets[x]+"px");
-      console.log("## r"+(x + 2)+" left: "+parseInt($("#r"+(x + 2)).css("left"))+" -> "+allOffsets[x]);
       $("#r"+(x + 2)).css("left", allOffsets[x]+"px");
     }
     var defaultFontSize = parseInt($(".target").css("font-size"));
     var defaultBorderWidth = parseInt($(".target").css("border-width"));
     $(".target").css("font-size", (defaultFontSize * scaleMultiply)+"px");
     $(".target").css("border-width", (defaultBorderWidth * scaleMultiply)+"px");
-    console.log("Scaling complete!");
   }
   
   
