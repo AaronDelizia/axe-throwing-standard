@@ -490,26 +490,11 @@ https://kovart.github.io/dashed-border-generator/
       }
       for(var r=0; r<rounds; r++){
         if(player.rounds.length > 0){
-          if(player.rounds[r * 2] || player.rounds[r * 2] == 0){
-            //if(player.rounds[(r * 2) - 1]){
-            //  console.log("second round");
-            //  scoreBoardBodyHTML += '<td>'+(player.rounds[r * 2] + player.rounds[(r * 2) - 1])+'</td>';
-            //}
-            //else{
-            //  console.log("first round");
-            //  scoreBoardBodyHTML += '<td>'+player.rounds[r * 2]+'</td>';
-            //}
-            if(!player.rounds[(r * 2) + 1]){
-              scoreBoardBodyHTML += '<td>'+player.rounds[r * 2]+'</td>';
-            }
-            else{
-              scoreBoardBodyHTML += '<td>'+(player.rounds[r * 2] + player.rounds[(r * 2) + 1])+'</td>';
-            }
-          }
-          else if(player.rounds[(r * 2) + 1] || player.rounds[(r * 2) + 1] == 0){
-            //console.log("first round");
-            //scoreBoardBodyHTML += '<td>'+player.rounds[(r * 2) + 1]+'</td>';
+          if(player.rounds[(r * 2) + 1] || player.rounds[(r * 2) + 1] == 0){
             scoreBoardBodyHTML += '<td>'+(player.rounds[r * 2] + player.rounds[(r * 2) + 1])+'</td>';
+          }
+          else if(player.rounds[r * 2] || player.rounds[r * 2] == 0){
+            scoreBoardBodyHTML += '<td>'+player.rounds[r * 2]+'</td>';
           }
           else{
             scoreBoardBodyHTML += '<td></td>';
@@ -688,29 +673,6 @@ https://kovart.github.io/dashed-border-generator/
   var undoPlayer = false;
   var enableUndo = false;
   
-  //$(".target").click(function(event){
-  //  var ring = parseInt(event.target.id[1]);
-  //  players[currentPlayer].rounds.push(ring);
-  //  if(players[currentPlayer].rounds.length == rounds && currentPlayer < (players.length-1)){
-  //    currentPlayer ++;
-  //    transformHome();
-  //    targetOrientation = -1;
-  //  }
-  //  else{
-  //    if(changeTarget){
-  //      if(changeTargetRandom){
-  //        var coinFlip = Math.floor(Math.random() * 2);
-  //        if(coinFlip == 0){
-  //          pickTransformation();
-  //        }
-  //      }
-  //      else if(players[currentPlayer].rounds.length % changeTargetAfterRounds == 0){
-  //        pickTransformation();
-  //      }
-  //    }
-  //  }
-  //  generateScoreBoard();
-  //});
   $(".target").click(function(event){
     advanceGame();
   });
