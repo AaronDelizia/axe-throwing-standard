@@ -554,7 +554,13 @@ https://kovart.github.io/dashed-border-generator/
   var leftShift = 100;
   var scaleMultiply = 1;
   
-  function shift(){
+  function shift(x,y){
+    if(x){
+      leftShift = x;
+    }
+    if(y){
+      topShift = y;
+    }
     for(var x=1; x<=5; x++){
       var defaultTop = parseInt($("#r"+x).css("top"));
       var newTop = defaultTop+topShift;
@@ -565,7 +571,10 @@ https://kovart.github.io/dashed-border-generator/
     }
   }
   
-  function scale(){
+  function scale(sm){
+    if(sm){
+      scaleMultiply = sm;
+    }
     var allOffsets = [];
     for(var x=1; x<=5; x++){
       var defaultHeight = parseInt($("#r"+x).css("height"));
@@ -742,7 +751,9 @@ https://kovart.github.io/dashed-border-generator/
   
   // Load with default settings
   $(document).ready(function() {
+    //pass as an arg to the below function the correct scale multiplyer to load page with that setting. i.e. scale(1.5)
     scale();
+    //pass as an arg to the below function the correct down and right shift values to load page with that setting. i.e. shift(500, 600) where 500 is the number of px to shift right and 600 is the number of px to down 
     shift();
     startTime();
   });
