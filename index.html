@@ -59,6 +59,7 @@ https://kovart.github.io/dashed-border-generator/
     border-color: white;
     font-family: 'Black Ops One', cursive;
     text-align: center;
+    vertical-align: text-bottom;
     font-size: 36px;
   }
   #r1 {
@@ -462,48 +463,6 @@ https://kovart.github.io/dashed-border-generator/
     transformHome();
   });
   
-  function generateScoreBoard(){
-    $("#setupGame").modal('hide');
-    var scoreBoardHeadHTML = '<tr><th scope="col">Player</th>';
-    for(var r=0; r<rounds; r++){
-      scoreBoardHeadHTML += '<th scope="col">'+(r+1)+'</th>';
-    }
-    scoreBoardHeadHTML += '<th scope="col">Total</th></tr>';
-    $("#score_h").html(scoreBoardHeadHTML);
-    var scoreBoardBodyHTML = '';
-    for(var p=0; p<players.length; p++){
-      var player = players[p];
-      if(currentPlayer == p){
-        scoreBoardBodyHTML += '<tr class="table-light"><td>'+player.name;
-      }
-      else{
-        scoreBoardBodyHTML += '<tr onclick="selectPlayer('+p+')"><td>'+player.name;
-      }
-      for(var r=0; r<rounds; r++){
-        if(player.rounds.length > 0){
-          if(player.rounds[(r * 2) + 1] || player.rounds[(r * 2) + 1] == 0){
-            scoreBoardBodyHTML += '<td>'+(player.rounds[r * 2] + player.rounds[(r * 2) + 1])+'</td>';
-          }
-          else if(player.rounds[r * 2] || player.rounds[r * 2] == 0){
-            scoreBoardBodyHTML += '<td>'+player.rounds[r * 2]+'</td>';
-          }
-          else{
-            scoreBoardBodyHTML += '<td></td>';
-          }
-        }
-        else{
-          scoreBoardBodyHTML += '<td></td>';
-        }
-      }
-      var total = 0;
-      for(var r=0; r<player.rounds.length; r++){
-        total += player.rounds[r];
-      }
-      scoreBoardBodyHTML += '<td>'+total+'</td></tr>';
-    }
-    $("#score_b").html(scoreBoardBodyHTML);
-  }
-  
   
   //////////////////////////////
   // Target transformation logic
@@ -665,30 +624,39 @@ https://kovart.github.io/dashed-border-generator/
   });
   
   function advanceGame(){
-    var ring = parseInt(event.target.id[1]);
-    players[currentPlayer].rounds.push(ring);
-    undoPlayer = false;
-    if(players[currentPlayer].rounds.length % 2 == 0 && currentPlayer < (players.length-1)){
-      currentPlayer ++;
-      undoPlayer = true;
+    var gameOver = true;
+    for(var p=0; p<players.length; p++){
+      if(players[p].rounds.length < (rounds * 2)){
+        gameOver = false;
+        break;
+      }
     }
-    else if(players[currentPlayer].rounds.length % 2 == 0 && currentPlayer == players.length-1){
-      currentPlayer = 0;
-      undoPlayer = true;
-    }
-    if(changeTarget){
-      if(changeTargetRandom){
-        var coinFlip = Math.floor(Math.random() * 2);
-        if(coinFlip == 0){
+    if(!gameOver){
+      var ring = parseInt(event.target.id[1]);
+      players[currentPlayer].rounds.push(ring);
+      undoPlayer = false;
+      if(players[currentPlayer].rounds.length % 2 == 0 && currentPlayer < (players.length-1)){
+        currentPlayer ++;
+        undoPlayer = true;
+      }
+      else if(players[currentPlayer].rounds.length % 2 == 0 && currentPlayer == players.length-1){
+        currentPlayer = 0;
+        undoPlayer = true;
+      }
+      if(changeTarget){
+        if(changeTargetRandom){
+          var coinFlip = Math.floor(Math.random() * 2);
+          if(coinFlip == 0){
+            pickTransformation();
+          }
+        }
+        else if(players[currentPlayer].rounds.length % changeTargetAfterRounds == 0){
           pickTransformation();
         }
       }
-      else if(players[currentPlayer].rounds.length % changeTargetAfterRounds == 0){
-        pickTransformation();
-      }
+      generateScoreBoard();
+      enableUndo = true;
     }
-    generateScoreBoard();
-    enableUndo = true;
   }
   
   function selectPlayer(player){
@@ -710,6 +678,48 @@ https://kovart.github.io/dashed-border-generator/
     }
     $("#"+event.target.id).css("color", "white");
   });
+  
+  function generateScoreBoard(){
+    $("#setupGame").modal('hide');
+    var scoreBoardHeadHTML = '<tr><th scope="col">Player</th>';
+    for(var r=0; r<rounds; r++){
+      scoreBoardHeadHTML += '<th scope="col">'+(r+1)+'</th>';
+    }
+    scoreBoardHeadHTML += '<th scope="col">Total</th></tr>';
+    $("#score_h").html(scoreBoardHeadHTML);
+    var scoreBoardBodyHTML = '';
+    for(var p=0; p<players.length; p++){
+      var player = players[p];
+      if(currentPlayer == p){
+        scoreBoardBodyHTML += '<tr class="table-light"><td>'+player.name;
+      }
+      else{
+        scoreBoardBodyHTML += '<tr onclick="selectPlayer('+p+')"><td>'+player.name;
+      }
+      for(var r=0; r<rounds; r++){
+        if(player.rounds.length > 0){
+          if(player.rounds[(r * 2) + 1] || player.rounds[(r * 2) + 1] == 0){
+            scoreBoardBodyHTML += '<td>'+(player.rounds[r * 2] + player.rounds[(r * 2) + 1])+'</td>';
+          }
+          else if(player.rounds[r * 2] || player.rounds[r * 2] == 0){
+            scoreBoardBodyHTML += '<td>'+player.rounds[r * 2]+'</td>';
+          }
+          else{
+            scoreBoardBodyHTML += '<td></td>';
+          }
+        }
+        else{
+          scoreBoardBodyHTML += '<td></td>';
+        }
+      }
+      var total = 0;
+      for(var r=0; r<player.rounds.length; r++){
+        total += player.rounds[r];
+      }
+      scoreBoardBodyHTML += '<td>'+total+'</td></tr>';
+    }
+    $("#score_b").html(scoreBoardBodyHTML);
+  }
   
   
   //////////////
