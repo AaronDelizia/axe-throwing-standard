@@ -347,8 +347,11 @@ https://kovart.github.io/dashed-border-generator/
   // Game setup logic
   ///////////////////
   var rounds = 5;
+  // Change the below variable to true to enable target changing during game. Setting to false will negate changeTargetAfterRounds & changeTargetRandom variables
   var changeTarget = false;
+  // Change the below variable to set the number of rounds to wait before changing the target. 
   var changeTargetAfterRounds = 2;
+  // Change the below variable to true to change target after a random number of rounds each time. Setting this variable to true will negate changeTargetAfterRounds variable.
   var changeTargetRandom = false;
   
   $('#setupGame').on('show.bs.modal', function (event) {
@@ -751,9 +754,9 @@ https://kovart.github.io/dashed-border-generator/
   
   // Load with default settings
   $(document).ready(function() {
-    //pass as an arg to the below function the correct scale multiplyer to load page with that setting. i.e. scale(1.5)
+    // Pass as an arg to the below function the correct scale multiplyer to load page with that setting. i.e. scale(1.5)
     scale();
-    //pass as an arg to the below function the correct down and right shift values to load page with that setting. i.e. shift(500, 600) where 500 is the number of px to shift right and 600 is the number of px to down 
+    // Pass as an arg to the below function the correct down and right shift values to load page with that setting. i.e. shift(500, 600) where 500 is the number of px to shift right and 600 is the number of px to down.
     shift();
     startTime();
   });
