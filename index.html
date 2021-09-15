@@ -178,6 +178,26 @@ https://kovart.github.io/dashed-border-generator/
                   </span>
                 </div>
               </div>
+              <div class="col-lg-4">
+                <label for="maxPlayers" class="form-label">Max players</label>
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-danger btn-number btn-lg" data-type="minus" data-field="" id="decreaseMaxPlayers">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                        <path d="M0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1z"/>
+                      </svg>
+                    </button>
+                  </span>
+                  <input type="text" id="maxPlayers" name="maxPlayers" class="form-control input-number" value="4" min="1" max="100">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-success btn-number btn-lg" data-type="plus" data-field="" id="increaseMaxPlayers">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+              </div>
             </div>
             <hr>
             <div class="row">
@@ -316,7 +336,7 @@ https://kovart.github.io/dashed-border-generator/
   
   function addPlayer(){
     var playerName = $("#addPlayerName").val().trim();
-    if(playerName){
+    if(playerName && players.length < maxPlayers){
       players.push({ name: playerName, rounds: [] });
     }
     generatePlayerEditList();
@@ -347,6 +367,7 @@ https://kovart.github.io/dashed-border-generator/
   // Game setup logic
   ///////////////////
   var rounds = 5;
+  var maxPlayers = 4;
   // Change the below variable to true to enable target changing during game. Setting to false will negate changeTargetAfterRounds & changeTargetRandom variables
   var changeTarget = false;
   // Change the below variable to set the number of rounds to wait before changing the target. 
@@ -356,6 +377,7 @@ https://kovart.github.io/dashed-border-generator/
   
   $('#setupGame').on('show.bs.modal', function (event) {
     $("#numRounds").val(rounds);
+    $("#maxPlayers").val(maxPlayers);
     $("#yShiftTarget").val(topShift);
     $("#xShiftTarget").val(leftShift);
     $("#scaleTarget").val(scaleMultiply);
@@ -383,6 +405,16 @@ https://kovart.github.io/dashed-border-generator/
   $("#increaseRounds").click(function(){
     rounds ++;
     $("#numRounds").val(rounds);
+  });
+  
+  $("#decreaseMaxPlayers").click(function(){
+    maxPlayers --;
+    $("#maxPlayers").val(maxPlayers);
+  });
+  
+  $("#increaseMaxPlayers").click(function(){
+    maxPlayers ++;
+    $("#maxPlayers").val(maxPlayers);
   });
   
   $("#decreaseChangeRounds").click(function(){
