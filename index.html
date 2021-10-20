@@ -98,6 +98,9 @@ https://kovart.github.io/dashed-border-generator/
     color: white;
     background-color: red;
   }
+  .buttonLink {
+    color: white;
+  }
 </style>
 </head>
 <body>
@@ -142,6 +145,30 @@ https://kovart.github.io/dashed-border-generator/
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary" id="savePlayers">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Setup Login Modal -->
+  <div class="modal fade" id="setupLogin" tabindex="-1" aria-labelledby="setupLoginLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="setupLoginLabel">Log In</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <label for="setupLoginPassword" class="form-label">Enter Password</label>
+            <div class="input-group mb-3">
+              <input type="password" class="form-control" id="setupLoginPassword" aria-describedby="basic-addon3">
+            </div>
+            <hr>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="setupLoginButton">Enter</button>
         </div>
       </div>
     </div>
@@ -271,6 +298,25 @@ https://kovart.github.io/dashed-border-generator/
     </div>
   </div>
   
+  <!-- Switch game modal -->
+  <div class="modal" tabindex="-1" id="confirmSwitchGame">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Switch Game</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" id="resetGame"><a class="buttonLink" href="">Switch</a></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <div class="container">
     <div class="row"><div class="col-12 clock"></div></div>
     <table id="scoreBoard" class="table table-bordered border-light table-dark w-100">
@@ -278,11 +324,12 @@ https://kovart.github.io/dashed-border-generator/
       <tbody id="score_b"></tbody>
     </table>
     <div class="row menu">
-      <div id="r0" class="col-2 menu-item targetZero highlight">Zero</div>
+      <div id="r0" class="col-1 menu-item targetZero highlight">Zero</div>
       <div id="undo" class="col-2 menu-item highlight">Undo</div>
       <div id="menuReset" class="col-2 menu-item highlight" data-bs-toggle="modal" data-bs-target="#confirmResetGame">Reset</div>
       <div id="menuAdd" class="col-3 menu-item highlight" data-bs-toggle="modal" data-bs-target="#addPlayers">Add Players</div>
-      <div id="menuSetup" class="col-3 menu-item highlight" data-bs-toggle="modal" data-bs-target="#setupGame">Setup</div>
+      <div id="menuSetup" class="col-2 menu-item highlight" data-bs-toggle="modal" data-bs-target="#setupLogin">Setup</div>
+      <div id="menuSwitch" class="col-2 menu-item highlight" data-bs-toggle="modal" data-bs-target="#confirmSwitchGame">Switch</div>
       <!-- Comment out the above line and uncomment the below line to disable the Setup button
       <div id="menuSetup" class="col-3 menu-item">Setup</div>
       -->
@@ -374,6 +421,35 @@ https://kovart.github.io/dashed-border-generator/
   var changeTargetAfterRounds = 2;
   // Change the below variable to true to change target after a random number of rounds each time. Setting this variable to true will negate changeTargetAfterRounds variable.
   var changeTargetRandom = false;
+  // To set password:
+  // 1. go to https://www.base64encode.org/
+  // 2. enter new password and click ENCODE
+  // 3. copy output and replace the value up setupPassword variable
+  var setupPassword = "aHViYXhlc2V0dXA="
+  $("#setupLoginPassword").on('keyup', function (event) {
+    if (event.key === 'Enter' || event.keyCode === 13) {
+      var passInput = btoa($("#setupLoginPassword").val());
+      if(setupPassword == passInput){
+        $("#setupLogin").modal('hide');
+        $("#setupGame").modal('show');
+      }
+      else{
+        
+      }
+      $("#setupLoginPassword").val('')
+    }
+  });
+  $('#setupLoginButton').click(function() {
+    var passInput = btoa($("#setupLoginPassword").val());
+    if(setupPassword == passInput){
+      $("#setupLogin").modal('hide');
+      $("#setupGame").modal('show');
+    }
+    else{
+      
+    }
+    $("#setupLoginPassword").val('')
+  });
   
   $('#setupGame').on('show.bs.modal', function (event) {
     $("#numRounds").val(rounds);
